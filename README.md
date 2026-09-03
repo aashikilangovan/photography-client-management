@@ -21,6 +21,16 @@ There's no login/authentication in this app by design — see [Architecture](#ar
 - **Galleries** — create and view, scoped to a project. Each gallery holds a name, description, and a list of image URLs (no real upload/storage — URLs or placeholder URLs only, kept simple on purpose).
 - **Public gallery links** — every gallery gets a random, unguessable slug (e.g. `/g/xK9pQ2mNc4Rt`). Anyone with that link can view the gallery — no account, no login. This is the core idea the project is built around: a photographer manages everything privately, then hands a client one link to their photos.
 
+## Screenshots
+
+| Clients | Projects |
+|---|---|
+| ![Clients page](docs/screenshots/clients.png) | ![Projects page](docs/screenshots/projects.png) |
+
+| Project detail (galleries + public link) | Public gallery view (no login) |
+|---|---|
+| ![Project detail page](docs/screenshots/project-detail.png) | ![Public gallery page](docs/screenshots/public-gallery.png) |
+
 ## Architecture
 
 ```
