@@ -20,7 +20,14 @@ services:
     ports:
       - '8000:8000'
     environment:
+      # Forces Postgres regardless of what DB_CONNECTION says in backend/.env
+      # (that file defaults to SQLite, for running without Docker at all).
+      DB_CONNECTION: pgsql
       DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: photography
+      DB_USERNAME: photography
+      DB_PASSWORD: photography
     env_file:
       - ./backend/.env
     volumes:
