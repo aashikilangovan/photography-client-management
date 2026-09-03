@@ -6,7 +6,7 @@ Built as a focused portfolio project to get hands-on with PHP/Laravel and Vue, u
 
 ## Tech stack
 
-- **Backend:** PHP 8.3 + Laravel 11
+- **Backend:** PHP 8.2+ (built/tested on 8.4) + Laravel 12
 - **Database:** SQLite for local dev (zero setup — one file), PostgreSQL 16 in the Docker setup
 - **Frontend:** Vue 3 (Composition API) + Vue Router + Axios
 - **API:** REST, JSON
@@ -40,12 +40,12 @@ There's no login/authentication in this app by design — see [Architecture](#ar
 
 No Docker needed to develop day-to-day — this runs like a normal PHP + Node project. SQLite is the default local database (a single file, nothing to install or run as a service); Docker + Postgres is available separately if you want a production-like setup.
 
-**Prerequisites:** [PHP](https://www.php.net/) 8.2+, [Composer](https://getcomposer.org/), and [Node](https://nodejs.org/) 20+. On Windows, the fastest way to get PHP and Composer:
+**Prerequisites:** [PHP](https://www.php.net/) 8.2+, [Composer](https://getcomposer.org/), and [Node](https://nodejs.org/) 20+.
 
-```powershell
-winget install PHP.PHP
-winget install Composer.Composer
-```
+On Windows, `winget install PHP.PHP.8.4` gets you PHP (pick the version tag you want — there's no plain `PHP.PHP` id). Two things it doesn't do for you:
+
+- **No `php.ini` is enabled by default** — copy `php.ini-production` to `php.ini` in the PHP install directory, then uncomment (remove the leading `;` from) `extension_dir`, `extension=curl`, `extension=fileinfo`, `extension=mbstring`, `extension=openssl`, `extension=pdo_sqlite`, and `extension=zip` (add `extension=pdo_pgsql`/`extension=pgsql` too if you'll use the Docker/Postgres path). Run `php -m` to confirm they're loaded.
+- **Composer isn't on winget.** Install it the [official manual way](https://getcomposer.org/download/) (download `installer`, verify its signature, run it with PHP) — the installer writes `composer.phar`; drop a `composer.bat` shim (`@php "%~dp0composer.phar" %*`) next to it so `composer` works as a plain command.
 
 **One-time setup:**
 
