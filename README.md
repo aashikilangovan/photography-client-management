@@ -2,15 +2,15 @@
 
 A small full-stack app for photographers to manage clients, photography projects, and galleries — and to deliver a finished gallery to a client through a public, no-login link, the way Pixieset actually delivers photos.
 
-Built as a focused portfolio project to get hands-on with PHP/Laravel and Vue, using a REST API and a Vue 3 SPA frontend.
+Built as a focused portfolio project to get hands-on with PHP/Laravel and Vue, using a REST API backed by PostgreSQL and a Vue 3 SPA frontend.
 
 ## Tech stack
 
 - **Backend:** PHP 8.3 + Laravel 11
-- **Database:** SQLite for local dev (zero setup — one file), PostgreSQL 16 in the Docker setup
+- **Database:** PostgreSQL 16
 - **Frontend:** Vue 3 (Composition API) + Vue Router + Axios
 - **API:** REST, JSON
-- **Running it:** `composer install` + `npm install` + `npm run dev` locally, or Docker Compose for a Postgres-backed setup — see [Running it locally](#running-it-locally)
+- **Local dev:** Docker Compose (Postgres, Laravel via `artisan serve`, Vue via Vite dev server)
 
 There's no login/authentication in this app by design — see [Architecture](#architecture) for why, and [Future improvements](#future-improvements) for where auth would go if this became a real product.
 
@@ -38,66 +38,34 @@ There's no login/authentication in this app by design — see [Architecture](#ar
 
 ## Running it locally
 
-No Docker needed to develop day-to-day — this runs like a normal PHP + Node project. SQLite is the default local database (a single file, nothing to install or run as a service); Docker + Postgres is available separately if you want a production-like setup.
-
-**Prerequisites:** [PHP](https://www.php.net/) 8.2+, [Composer](https://getcomposer.org/), and [Node](https://nodejs.org/) 20+. On Windows, the fastest way to get PHP and Composer:
-
-```powershell
-winget install PHP.PHP
-winget install Composer.Composer
-```
-
-**One-time setup:**
+Requires [Docker](https://www.docker.com/) (Docker Desktop, or the Docker CLI + Compose plugin) — nothing else needs to be installed on your machine.
 
 ```bash
 git clone <this-repo>
 cd photography-client-management
 
-# Backend
-cd backend
-composer install
-cp .env.example .env          # Windows: copy .env.example .env
-php artisan key:generate
-touch database/database.sqlite   # Windows: New-Item database/database.sqlite
-php artisan migrate --seed
-cd ..
-
-# Frontend
-cd frontend && npm install && cd ..
-
-# Root (adds the `npm run dev` convenience script below)
-npm install
-```
-
-**Every time after that**, one command starts both the API and the frontend:
-
-```bash
-npm run dev
-```
-
-- Frontend: http://localhost:5173
-- API: http://localhost:8000/api
-
-(No `npm run dev` script? Run `php artisan serve` in `backend/` and `npm run dev` in `frontend/` in two terminals instead — that's all the root script does for you.)
-
-Run the backend's test suite (in-memory SQLite, isolated from your dev database):
-
-```bash
-cd backend && php artisan test
-```
-
-### Alternative: Docker + Postgres
-
-For a setup closer to a real deployment (or if you'd rather not install PHP/Composer locally at all):
-
-```bash
+# Backend env file
 cp backend/.env.example backend/.env
+
+# Build and start Postgres, the Laravel API, and the Vue dev server
 docker compose up --build -d
+
+# One-time setup: generate the app key and create the schema (with demo data)
 docker compose exec backend php artisan key:generate
 docker compose exec backend php artisan migrate --seed
 ```
 
-Same URLs as above. Postgres itself is reachable at `localhost:5432` (user/pass/db: `photography` / `photography` / `photography`). Stop with `docker compose down` (`-v` to also drop the Postgres volume).
+- Frontend: http://localhost:5173
+- API: http://localhost:8000/api
+- Postgres: `localhost:5432` (user/pass/db: `photography` / `photography` / `photography`)
+
+Run the backend's test suite (in-memory SQLite, no Postgres needed):
+
+```bash
+docker compose exec backend php artisan test
+```
+
+Stop everything with `docker compose down` (add `-v` to also drop the Postgres volume and start fresh).
 
 ## Example API endpoints
 
@@ -123,7 +91,6 @@ All list/detail responses are wrapped in Laravel API Resources (`{"data": ...}`)
 - Designing two different API Resources for the same model (`GalleryResource` vs. `PublicGalleryResource`) as a deliberate way to control exactly what an unauthenticated audience can see, rather than filtering fields ad hoc in the controller.
 - Vue's Composition API (`ref`, `onMounted`) for simple local component state, and `vue-router`'s route `meta` field for a small but real architectural decision: giving the public gallery page its own bare layout instead of the admin shell.
 - Wiring Docker Compose for a decoupled frontend/backend/database setup, including the common pitfall of a bind-mounted source directory shadowing dependencies installed at image-build time (solved with named volumes for `vendor/` and `node_modules/`).
-- Laravel's config layer makes swapping databases a one-line change (`config/database.php`), not a rewrite — SQLite for zero-setup local dev, Postgres for the Docker/production-like path, same migrations and models work against both.
 
 ## Future improvements
 

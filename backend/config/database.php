@@ -1,26 +1,14 @@
 <?php
 
+use Illuminate\Support\Str;
+
 return [
-    // SQLite by default — running locally needs no database server at all,
-    // just a file. Switch to "pgsql" (see below) for the Docker/Postgres setup.
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     'connections' => [
-        'sqlite' => [
-            'driver' => 'sqlite',
-            // A real file for local dev (database/database.sqlite); phpunit.xml
-            // overrides this to ":memory:" so the test suite never touches it.
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
-            'prefix' => '',
-            'foreign_key_constraints' => true,
-        ],
-
-        // Used by the Docker Compose setup (docker-compose.yml sets
-        // DB_CONNECTION=pgsql explicitly), or any time you want Postgres
-        // instead of SQLite locally.
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => env('DB_HOST', '127.0.0.1'),
+            'host' => env('DB_HOST', 'postgres'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'photography'),
             'username' => env('DB_USERNAME', 'photography'),
@@ -30,6 +18,15 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+        ],
+
+        // Used automatically when running `php artisan test` (see phpunit.xml) —
+        // an in-memory SQLite database keeps tests fast and isolated from Postgres.
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+            'foreign_key_constraints' => true,
         ],
     ],
 
