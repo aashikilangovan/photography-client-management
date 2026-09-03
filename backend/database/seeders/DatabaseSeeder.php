@@ -58,10 +58,14 @@ class DatabaseSeeder extends Seeder
             'project_id' => $engagement->id,
             'name' => 'Kitsilano Beach Highlights',
             'description' => 'Selects from the engagement shoot.',
+            // Picsum (picsum.photos) serves real, freely-usable stock photos —
+            // used here instead of a plain color+text placeholder purely so the
+            // demo data looks like an actual gallery. A seed keeps each URL
+            // pointing at the same photo every time (not truly random).
             'image_urls' => [
-                'https://placehold.co/800x600?text=Engagement+1',
-                'https://placehold.co/800x600?text=Engagement+2',
-                'https://placehold.co/800x600?text=Engagement+3',
+                'https://picsum.photos/seed/engagement-session-1/800/600',
+                'https://picsum.photos/seed/engagement-session-2/800/600',
+                'https://picsum.photos/seed/engagement-session-3/800/600',
             ],
         ]);
 
@@ -70,7 +74,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Ceremony Preview',
             'description' => 'First look — full gallery coming soon.',
             'image_urls' => [
-                'https://placehold.co/800x600?text=Ceremony+1',
+                'https://picsum.photos/seed/wedding-ceremony-1/800/600',
             ],
         ]);
     }

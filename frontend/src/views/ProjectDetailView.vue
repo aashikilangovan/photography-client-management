@@ -103,7 +103,7 @@ onMounted(loadAll)
           <textarea
             v-model="form.imageUrlsText"
             rows="3"
-            placeholder="https://placehold.co/800x600?text=1"
+            placeholder="https://picsum.photos/seed/example/800/600"
           ></textarea>
         </label>
         <div class="actions">
